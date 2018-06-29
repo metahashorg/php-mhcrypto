@@ -29,6 +29,9 @@ extern "C" {
   #include "php_mhcrypto.h"
 }
 
+#include <vector>
+#include <string>
+
 #include "crypto.h"
 
 
@@ -39,7 +42,7 @@ ZEND_DECLARE_MODULE_GLOBALS(mhcrypto)
 static int le_mhcrypto;
 
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_mhcrypto_generate_wallet, 0, 0, 1)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_mhcrypto_generate_wallet, 0, 0, 3)
   ZEND_ARG_INFO(1, private_key)
   ZEND_ARG_INFO(1, public_key)
   ZEND_ARG_INFO(1, mh_address)
@@ -65,16 +68,9 @@ PHP_FUNCTION(mhcrypto_generate_wallet)
   ZVAL_DEREF(public_key);
   ZVAL_DEREF(mh_address);
 
-  if(Z_TYPE_P(private_key) != IS_STRING)
-    return;
-  if(Z_TYPE_P(public_key) != IS_STRING)
-    return;
-  if(Z_TYPE_P(mh_address) != IS_STRING)
-    return;
-
-  std::string str_private_key = std::string(Z_STRVAL_P(private_key), Z_STRLEN_P(private_key));
-  std::string str_public_key = std::string(Z_STRVAL_P(public_key), Z_STRLEN_P(public_key));
-  std::string str_mh_address = std::string(Z_STRVAL_P(mh_address), Z_STRLEN_P(mh_address));
+  std::string str_private_key;
+  std::string str_public_key;
+  std::string str_mh_address;
   
   if(password)
     CRYPTO_generate_wallet(
@@ -93,6 +89,80 @@ PHP_FUNCTION(mhcrypto_generate_wallet)
   ZVAL_STRING(private_key, str_private_key.c_str());
   ZVAL_STRING(public_key, str_public_key.c_str());
   ZVAL_STRING(mh_address, str_mh_address.c_str());
+}
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_mhcrypto_sign_text, 0, 0, 3)
+  ZEND_ARG_INFO(1, sign)
+  ZEND_ARG_INFO(0, private_key)
+  ZEND_ARG_INFO(0, text)
+  ZEND_ARG_INFO(0, password)
+ZEND_END_ARG_INFO();
+
+PHP_FUNCTION(mhcrypto_sign_text)
+{
+  zval *sign = NULL;
+  zend_string *private_key = NULL;
+  zend_string *text = NULL;
+  zend_string *password = NULL;
+
+  ZEND_PARSE_PARAMETERS_START(3, 4)
+    Z_PARAM_ZVAL(sign);
+    Z_PARAM_STR(private_key);
+    Z_PARAM_STR(text);
+    Z_PARAM_OPTIONAL
+    Z_PARAM_STR(password);
+  ZEND_PARSE_PARAMETERS_END();
+
+  ZVAL_DEREF(sign);
+
+  std::vector<unsigned char> vec_sign;
+  
+  if(password)
+    CRYPTO_sign_text(
+      vec_sign,
+      std::string(ZSTR_VAL(private_key), ZSTR_LEN(private_key)),
+      std::string(ZSTR_VAL(text), ZSTR_LEN(text)),
+      std::string(ZSTR_VAL(password), ZSTR_LEN(password))
+    );
+  else
+    CRYPTO_sign_text(
+      vec_sign,
+      std::string(ZSTR_VAL(private_key), ZSTR_LEN(private_key)),
+      std::string(ZSTR_VAL(text), ZSTR_LEN(text))
+    );
+
+  ZVAL_STRINGL(sign, reinterpret_cast<char *>(vec_sign.data()), vec_sign.size());
+}
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_mhcrypto_check_sign_text, 0, 0, 3)
+  ZEND_ARG_INFO(0, sign)
+  ZEND_ARG_INFO(0, public_key)
+  ZEND_ARG_INFO(0, text)
+ZEND_END_ARG_INFO();
+
+PHP_FUNCTION(mhcrypto_check_sign_text)
+{
+  zend_string *sign = NULL;
+  zend_string *public_key = NULL;
+  zend_string *text = NULL;
+
+  ZEND_PARSE_PARAMETERS_START(3, 3)
+    Z_PARAM_STR(sign);
+    Z_PARAM_STR(public_key);
+    Z_PARAM_STR(text);
+  ZEND_PARSE_PARAMETERS_END();
+
+  std::vector<unsigned char> vec_sign;
+  vec_sign.resize(ZSTR_LEN(sign));
+  memcpy(vec_sign.data(), ZSTR_VAL(sign), ZSTR_LEN(sign));
+  
+  bool rc = CRYPTO_check_sign_text(
+    vec_sign,
+    std::string(ZSTR_VAL(public_key), ZSTR_LEN(public_key)),
+    std::string(ZSTR_VAL(text), ZSTR_LEN(text))
+  );
+  
+  RETURN_BOOL(rc);
 }
 
 
@@ -137,6 +207,8 @@ PHP_MINFO_FUNCTION(mhcrypto)
  */
 const zend_function_entry mhcrypto_functions[] = {
 	PHP_FE(mhcrypto_generate_wallet,	arginfo_mhcrypto_generate_wallet)		/* Actual entry point for PHP. */
+	PHP_FE(mhcrypto_sign_text,	arginfo_mhcrypto_sign_text)		/* Actual entry point for PHP. */
+	PHP_FE(mhcrypto_check_sign_text,	arginfo_mhcrypto_check_sign_text)		/* Actual entry point for PHP. */
 	PHP_FE_END	/* Must be the last line in mhcrypto_functions[] */
 };
 
