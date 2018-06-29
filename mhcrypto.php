@@ -22,5 +22,5 @@
   $result = "FAIL";
   if(mhcrypto_check_sign_text($sign, $public_key, $text))
     $result = "PASS";
-  echo "Check signing text with public key: " . $result . "\n";
+  echo "Check signature with public key: " . $result . "\n";
 ?>
