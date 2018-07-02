@@ -20,7 +20,7 @@ make install
 
 ## Test application
 This PHP7 test script shows the use of extension.
-Enable dl() function in your php.ini with enable_dl option.
+Enable `dl()` function in your `php.ini` with `enable_dl` option.
 ```shell
 php -f mhcrypto.php
 ```
