@@ -170,6 +170,9 @@ PHP_MINIT_FUNCTION(mhcrypto)
 {
 	//REGISTER_INI_ENTRIES();
   
+  /* Load all digest and cipher algorithms */
+  OpenSSL_add_all_algorithms();
+
 	return SUCCESS;
 }
 
@@ -177,6 +180,13 @@ PHP_MSHUTDOWN_FUNCTION(mhcrypto)
 {
 	//UNREGISTER_INI_ENTRIES();
   
+  /* Removes all digests and ciphers */
+  EVP_cleanup();
+
+  /* if you omit the next, a small leak may be left when you make
+     use of the BIO (low level API) for e.g. base64 transformations */
+  CRYPTO_cleanup_all_ex_data();
+
 	return SUCCESS;
 }
 
