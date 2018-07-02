@@ -71,7 +71,7 @@ PHP_FUNCTION(mhcrypto_generate_wallet)
   std::string str_private_key;
   std::string str_public_key;
   std::string str_mh_address;
-  
+
   if(password)
     CRYPTO_generate_wallet(
       str_private_key,
@@ -116,7 +116,7 @@ PHP_FUNCTION(mhcrypto_sign_text)
   ZVAL_DEREF(sign);
 
   std::vector<unsigned char> vec_sign;
-  
+
   if(password)
     CRYPTO_sign_text(
       vec_sign,
@@ -155,31 +155,31 @@ PHP_FUNCTION(mhcrypto_check_sign_text)
   std::vector<unsigned char> vec_sign;
   vec_sign.resize(ZSTR_LEN(sign));
   memcpy(vec_sign.data(), ZSTR_VAL(sign), ZSTR_LEN(sign));
-  
+
   bool rc = CRYPTO_check_sign_text(
     vec_sign,
     std::string(ZSTR_VAL(public_key), ZSTR_LEN(public_key)),
     std::string(ZSTR_VAL(text), ZSTR_LEN(text))
   );
-  
+
   RETURN_BOOL(rc);
 }
 
 
 PHP_MINIT_FUNCTION(mhcrypto)
 {
-	//REGISTER_INI_ENTRIES();
-  
+  //REGISTER_INI_ENTRIES();
+
   /* Load all digest and cipher algorithms */
   OpenSSL_add_all_algorithms();
 
-	return SUCCESS;
+  return SUCCESS;
 }
 
 PHP_MSHUTDOWN_FUNCTION(mhcrypto)
 {
-	//UNREGISTER_INI_ENTRIES();
-  
+  //UNREGISTER_INI_ENTRIES();
+
   /* Removes all digests and ciphers */
   EVP_cleanup();
 
@@ -187,53 +187,53 @@ PHP_MSHUTDOWN_FUNCTION(mhcrypto)
      use of the BIO (low level API) for e.g. base64 transformations */
   CRYPTO_cleanup_all_ex_data();
 
-	return SUCCESS;
+  return SUCCESS;
 }
 
 PHP_RINIT_FUNCTION(mhcrypto)
 {
 #if defined(COMPILE_DL_MHCRYPTO) && defined(ZTS)
-	ZEND_TSRMLS_CACHE_UPDATE();
+  ZEND_TSRMLS_CACHE_UPDATE();
 #endif
-	return SUCCESS;
+  return SUCCESS;
 }
 
 PHP_RSHUTDOWN_FUNCTION(mhcrypto)
 {
-	return SUCCESS;
+  return SUCCESS;
 }
 
 PHP_MINFO_FUNCTION(mhcrypto)
 {
-	php_info_print_table_start();
-	php_info_print_table_header(2, "mhcrypto support", "enabled");
-	php_info_print_table_end();
+  php_info_print_table_start();
+  php_info_print_table_header(2, "mhcrypto support", "enabled");
+  php_info_print_table_end();
 
-	//DISPLAY_INI_ENTRIES();
+  //DISPLAY_INI_ENTRIES();
 }
 
 /*
  * Every user visible function must have an entry in mhcrypto_functions[].
  */
 const zend_function_entry mhcrypto_functions[] = {
-	PHP_FE(mhcrypto_generate_wallet,	arginfo_mhcrypto_generate_wallet)		/* Actual entry point for PHP. */
-	PHP_FE(mhcrypto_sign_text,	arginfo_mhcrypto_sign_text)		/* Actual entry point for PHP. */
-	PHP_FE(mhcrypto_check_sign_text,	arginfo_mhcrypto_check_sign_text)		/* Actual entry point for PHP. */
-	PHP_FE_END	/* Must be the last line in mhcrypto_functions[] */
+  PHP_FE(mhcrypto_generate_wallet,  arginfo_mhcrypto_generate_wallet)   /* Actual entry point for PHP. */
+  PHP_FE(mhcrypto_sign_text,  arginfo_mhcrypto_sign_text)   /* Actual entry point for PHP. */
+  PHP_FE(mhcrypto_check_sign_text,  arginfo_mhcrypto_check_sign_text)   /* Actual entry point for PHP. */
+  PHP_FE_END  /* Must be the last line in mhcrypto_functions[] */
 };
 
 
 zend_module_entry mhcrypto_module_entry = {
-	STANDARD_MODULE_HEADER,
-	"mhcrypto",
-	mhcrypto_functions,
-	PHP_MINIT(mhcrypto),
-	PHP_MSHUTDOWN(mhcrypto),
-	PHP_RINIT(mhcrypto),
-	PHP_RSHUTDOWN(mhcrypto),
-	PHP_MINFO(mhcrypto),
-	PHP_MHCRYPTO_VERSION,
-	STANDARD_MODULE_PROPERTIES
+  STANDARD_MODULE_HEADER,
+  "mhcrypto",
+  mhcrypto_functions,
+  PHP_MINIT(mhcrypto),
+  PHP_MSHUTDOWN(mhcrypto),
+  PHP_RINIT(mhcrypto),
+  PHP_RSHUTDOWN(mhcrypto),
+  PHP_MINFO(mhcrypto),
+  PHP_MHCRYPTO_VERSION,
+  STANDARD_MODULE_PROPERTIES
 };
 
 #ifdef COMPILE_DL_MHCRYPTO
