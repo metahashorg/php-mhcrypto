@@ -26,6 +26,7 @@ php -f mhcrypto.php
 ```
 
 ## API
+#### mhcrypto_generate_wallet
 ```
 mhcrypto_generate_wallet(string $private_key, string $public_key, string $mh_address[, string $password])
 ```
@@ -33,6 +34,7 @@ This procedure generates new wallet. Wallet is represented by 3 strings: private
 String arguments are passed by reference. Means that procedure fills them with new generated values.
 `$password` argument is optional and not implemented in that version.
 
+#### mhcrypto_sign_text
 ```
 mhcrypto_sign_text(string $sign, string $private_key, string $text[, string $password])
 ```
@@ -41,6 +43,7 @@ This procedure uses private key to build a signature for given text. All 3 argum
 is not a string rather it's binary data can be used in conjunction with `mhcrypto_check_sign_text` function.
 `$password` argument is optional and not implemented in that version.
 
+#### mhcrypto_check_sign_text
 ```
 bool mhcrypto_check_sign_text(string $sign, string $public_key, string $text)
 ```
