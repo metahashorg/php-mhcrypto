@@ -26,17 +26,23 @@ php -f mhcrypto.php
 ```
 
 ## API
-`mhcrypto_generate_wallet($private_key, $public_key, $mh_address, $password)`
+```
+mhcrypto_generate_wallet($private_key, $public_key, $mh_address, $password)
+```
 This procedure generates new wallet. Wallet is represented by 3 strings: private and public key and wallet address.
 String arguments are passed by reference. Means that procedure fills them with new generated values.
 `$password` argument is optional and not implemented in that version.
 
-`mhcrypto_sign_text($sign, $private_key, $text, $password)`
+```
+mhcrypto_sign_text($sign, $private_key, $text, $password)
+```
 This procedure uses private key to build a signature for given text. All 3 arguments are string variables.
 `$sign` signature variables is passed by reference. However `$sign` variable have a type of string the content of variable
 is not a string rather it's binary data can be used in conjunction with `mhcrypto_check_sign_text` function.
 `$password` argument is optional and not implemented in that version.
 
-`bool mhcrypto_check_sign_text($sign, $public_key, $text)`
+```
+bool mhcrypto_check_sign_text($sign, $public_key, $text)
+```
 Takes 3 string arguments and returns boolean result of the test if given signature matches given text.
 Public key is required for that operation.
