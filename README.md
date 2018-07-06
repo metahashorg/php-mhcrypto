@@ -1,7 +1,8 @@
 # php-mhcrypto
 
 This repository contains Metahash wallet and signature PHP API sample code.
-C++ code is used from repository https://github.com/metahashorg/cpplib_open_ssl_decor
+For more details about Metahash address generation, please read the [article](https://support.metahash.org/hc/en-us/articles/360002712193-Getting-started-with-Metahash-network#h_683619682421524476003219).
+C++ code is used from repository [cpplib_open_ssl_decor](https://github.com/metahashorg/cpplib_open_ssl_decor).
 
 ## Get the source code
 Clone the repository by:
