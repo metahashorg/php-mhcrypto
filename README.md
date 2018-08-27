@@ -19,6 +19,8 @@ make
 make install
 ```
 
+Please note that in the `php.ini` file should be added `extension = mhcrypto.so`
+
 ## Test application
 This PHP7 test script shows the use of extension.
 Enable `dl()` function in your `php.ini` with `enable_dl` option.
