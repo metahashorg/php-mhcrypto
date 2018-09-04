@@ -19,6 +19,9 @@ make
 make install
 ```
 
+## Load extension
+Either load extension in your PHP script with dl() call or modify your PHP configuration and add 'extension=mhcrypto.so' to load it always.
+
 Please note that in the `php.ini` file should be added `extension = mhcrypto.so`
 
 ## Test application
