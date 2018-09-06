@@ -11,7 +11,7 @@ git clone https://github.com/metahashorg/php-mhcrypto
 ```
 
 ## Build extension
-Instructions to get PHP7 extension binary:
+Run following commands in php-mhcrypto project folder:
 ```shell
 phpize
 ./configure --enable-mhcrypto
@@ -20,9 +20,11 @@ make install
 ```
 
 ## Load extension
-Either load extension in your PHP script with dl() call or modify your PHP configuration and add 'extension=mhcrypto.so' to load it always.
+Extension should be loaded before being used.
 
-Please note that in the `php.ini` file should be added `extension = mhcrypto.so`
+Call dl() function in PHP script by the moment you need the extension (refer to sample script [mhcrypto.php](https://github.com/metahashorg/php-mhcrypto/blob/master/mhcrypto.php)).
+
+Use PHP configuration if you need to load extension always. Put 'extension = mhcrypto.so' into PHP.ini. (Refer to PHP documentation for 'extension' keyword and your Linux documentation for PHP.ini location.)
 
 ## Test application
 This PHP7 test script shows the use of extension.
