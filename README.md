@@ -16,7 +16,7 @@ Run following commands in php-mhcrypto project folder:
 phpize
 ./configure --enable-mhcrypto
 make
-make install
+sudo make install
 ```
 
 ## Load extension
@@ -24,7 +24,19 @@ Extension should be loaded before being used.
 
 Call dl() function in PHP script by the moment you need the extension (refer to sample script [mhcrypto.php](https://github.com/metahashorg/php-mhcrypto/blob/master/mhcrypto.php)).
 
-Use PHP configuration if you need to load extension always. Put 'extension = mhcrypto.so' into PHP.ini. (Refer to PHP documentation for 'extension' keyword and your Linux documentation for PHP.ini location.)
+Use PHP configuration if you need to load extension always. 
+
+Put 'extension=mhcrypto.so' into PHP.ini. You need to change php.ini for php-cli and php-fpm (for example, `sudo nano php.ini`).
+
+For example so you can find the php.ini for php-cli on your computer:
+```shell
+php -i|grep php.ini
+Configuration File (php.ini) Path => /etc/php/7.3/cli
+Loaded Configuration File => /etc/php/7.3/cli/php.ini
+```
+php.ini for php-fpm will be in the same folder ~/fpm/php.ini
+
+(Refer to PHP documentation for 'extension' keyword and your Linux documentation for PHP.ini location.)
 
 ## Test application
 This PHP7 test script shows the use of extension.
